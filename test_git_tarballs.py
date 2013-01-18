@@ -54,7 +54,14 @@ CHANGELOG = (
     ' doc/source/conf.py                      |    2 +\n'
     ' doc/source/man/nova-spicehtml5proxy.rst |   48 ++++++++++++++++\n'
     ' setup.py                                |    1 +\n'
-    ' 4 files changed, 144 insertions(+)\n')
+    ' 4 files changed, 144 insertions(+)\n'
+    '\n'
+    'commit bd8399bd2f51f1dcaa5194cb035415c634383917\n'
+    'Merge: 2cdc27b e71e8c2\n'
+    'Author: Jenkins <jenkins@review.openstack.org>\n'
+    'Date:   Thu Jan 17 11:59:12 2013 +0000\n'
+    '\n'
+    '    Merge "Pull NovaWebSocketProxy class out of nova-novncproxy binary"\n')
 
 
 class TestGitTarballs(unittest.TestCase):
@@ -82,7 +89,12 @@ class TestGitTarballs(unittest.TestCase):
              ('eab051ec68bdc8792dddb63c9231ece11ab06037',
               'Foo Barwington <barwing@ton.com>',
               'Thu Jan 3 10:23:50 2013 +0000',
-              'Add nova-spicehtml5proxy helper')],
+              'Add nova-spicehtml5proxy helper'),
+             ('bd8399bd2f51f1dcaa5194cb035415c634383917',
+              'Jenkins <jenkins@review.openstack.org>',
+              'Thu Jan 17 11:59:12 2013 +0000',
+              'Merge "Pull NovaWebSocketProxy class out of '
+              'nova-novncproxy binary"')],
             [c.groups() for c in ghb.parse_changelog(CHANGELOG)])
 
     def test_parse_changelog_empty(self):

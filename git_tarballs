@@ -92,6 +92,9 @@ def parse_changelog(changelog):
 
     Returns an iterable of _sre.SRE_Match match objects from python's `re`
 
+    Each object will have the following attributes:
+        commit, author, date, message
+
     """
     # FIXME: we can actually ignore Merge commits altogether.
     return re.finditer(r'^commit (?P<commit>.*?)$'
