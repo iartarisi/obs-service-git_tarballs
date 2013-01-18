@@ -86,24 +86,23 @@ def get_upstream_commit(changelog):
 
 
 def parse_changelog(changelog):
-    """Parse a git ChangeLog file returning an iterable of dicts
+    """Parse a git ChangeLog file
 
     :changelog: string with the contents of the file
 
+    Returns an iterable of _sre.SRE_Match match objects from python's `re`
+
     """
-    try:
-        # FIXME: we can actually ignore Merge commits altogether.
-        return re.finditer(r'^commit (?P<commit>.*?)$'
-                           '.*?'
-                           '^Author:\s+(?P<author>.*?)$'
-                           '.*?'
-                           '^Date:\s+(?P<date>.*?)$'
-                           '.*?'
-                           '\n\n\s+(?P<message>.*?)$'
-                           '(?:\n\n|\n.*?)',
-                           changelog, re.MULTILINE | re.DOTALL)
-    except AttributeError:
-        sys.exit("Could not parse ChangeLog file.")
+    # FIXME: we can actually ignore Merge commits altogether.
+    return re.finditer(r'^commit (?P<commit>.*?)$'
+                       '.*?'
+                       '^Author:\s+(?P<author>.*?)$'
+                       '.*?'
+                       '^Date:\s+(?P<date>.*?)$'
+                       '.*?'
+                       '\n\n\s+(?P<message>.*?)$'
+                       '(?:\n\n|\n.*?)',
+                       changelog, re.MULTILINE | re.DOTALL)
 
 
 def get_commit_from_spec(package):

@@ -22,8 +22,42 @@ import mock
 ghb = imp.load_source('ghb', 'git_tarballs')
 
 
-class TestGitTarballs(unittest.TestCase):
+CHANGELOG = (
+    'commit 921b7c514fb79bd4b8a023f34d22df4efe5406ad\n'
+    'Merge: 9ae14c7 518bdb5\n'
+    'Author: Jenkins <jenkins@review.openstack.org>\n'
+    'Date:   Thu Jan 17 12:14:24 2013 +0000\n'
+    '\n'
+    '    Merge "Expose a get_spice_console RPC API method"\n'
+    '\n'
+    'commit 9ae14c7570bb9dfc4bf1ab8f8127cae3c9eb2641\n'
+    'Merge: b76c5cf d597993\n'
+    'Author: Jenkins <jenkins@review.openstack.org>\n'
+    'Date:   Thu Jan 17 11:59:39 2013 +0000\n'
+    '\n'
+    '    Merge "Add a get_spice_console method to nova.virt API"\n'
+    '\n'
+    'commit eab051ec68bdc8792dddb63c9231ece11ab06037\n'
+    'Author: Foo Barwington <barwing@ton.com>\n'
+    'Date:   Thu Jan 3 10:23:50 2013 +0000\n'
+    '\n'
+    '    Add nova-spicehtml5proxy helper\n'
+    '    \n'
+    '    Add nova-spicehtml5proxy which provides a websockets proxy,\n'
+    '    equivalent to nova-novncproxy\n'
+    '    \n'
+    '    Blueprint: libvirt-spice\n'
+    '    Change-Id: I48be78c97bb7dd6635fd4bba476ef22701418ba1\n'
+    '    Signed-off-by: Foo Barwington <barwing@ton.com>\n'
+    '\n'
+    ' bin/nova-spicehtml5proxy                |   93 +++++++++++++++++++++++\n'
+    ' doc/source/conf.py                      |    2 +\n'
+    ' doc/source/man/nova-spicehtml5proxy.rst |   48 ++++++++++++++++\n'
+    ' setup.py                                |    1 +\n'
+    ' 4 files changed, 144 insertions(+)\n')
 
+
+class TestGitTarballs(unittest.TestCase):
     def test_version_parse(self):
         with mock_open(u"\nVersion: 2012.2.3+git.1355917214.0c8c2a3\n"):
             self.assertEqual('0c8c2a3',
@@ -34,6 +68,26 @@ class TestGitTarballs(unittest.TestCase):
                 u"\nVersion: 2012.2.3+git.1355917214.0c8c2a3 # oi comment\n"):
             self.assertEqual('0c8c2a3',
                              ghb.get_commit_from_spec('example_pkg'))
+
+    def test_parse_changelog(self):
+        self.assertEqual(
+            [('921b7c514fb79bd4b8a023f34d22df4efe5406ad',
+              'Jenkins <jenkins@review.openstack.org>',
+              'Thu Jan 17 12:14:24 2013 +0000',
+              'Merge "Expose a get_spice_console RPC API method"'),
+             ('9ae14c7570bb9dfc4bf1ab8f8127cae3c9eb2641',
+              'Jenkins <jenkins@review.openstack.org>',
+              'Thu Jan 17 11:59:39 2013 +0000',
+              'Merge "Add a get_spice_console method to nova.virt API"'),
+             ('eab051ec68bdc8792dddb63c9231ece11ab06037',
+              'Foo Barwington <barwing@ton.com>',
+              'Thu Jan 3 10:23:50 2013 +0000',
+              'Add nova-spicehtml5proxy helper')],
+            [c.groups() for c in ghb.parse_changelog(CHANGELOG)])
+
+    def test_parse_changelog_empty(self):
+        self.assertEqual([],
+                         list(ghb.parse_changelog("bogus")))
 
 
 class TestGitParseUpdateSpec(unittest.TestCase):
